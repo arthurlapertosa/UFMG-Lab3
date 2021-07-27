@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grupo C</title>
+    <script src="https://kit.fontawesome.com/b55eda9e92.js" crossorigin="anonymous"></script>
+    <script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap" rel="stylesheet">
+    <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet">
+</head>
+<body>
+    <form class="form-group" action="/" method="post">
+        <div class="main">
+             <img src="{{url_for('static', filename='hand.png')}}" alt="hand" class="hand">
+            <div class="settings">
+                <span>Rotation (Degrees)</span>
+                <input type="number" name="rotation_dt" value="10">
+            </div>
+            <div class="settings">
+                <span>Rope</span>
+                <input type="number" name="cable_dt" value="10">
+            </div>
+            <span class="sep"></span>
+            <div class="normal-info">
+                <span>Laser</span>
+                <span class="dot up-off" id="dot-up"></span>
+                <span class="dot down-off" id="dot-down"></span>
+                <span class="laser val"></span>
+            </div>
+            <div class="normal-btn">
+                <button type="button" id="cable_up"><i class="fas fa-arrow-up fa-5x"></i></button>
+            </div>
+            <div class="normal-info">
+                <span>Rotation</span>
+                <span class="circle" ></span>
+                <span class="center"></span>
+                <span class="sub-circle minor"></span>
+                <span class="sub-circle major"></span>
+                <span class="rotation val">0°</span>
+            </div>
+            <div class="normal-btn">
+                <button type="button" id="rotate-anti-hour"><i class="fas fa-undo-alt fa-5x"></i></button>
+            </div>
+            <div class="normal-btn">
+                <button type="button" id="turn_magnet"><i class="fas fa-magnet fa-5x"></i></button>
+            </div>
+            <div class="normal-btn">
+                <button type="button" id="rotate-hour"><i class="fas fa-redo-alt fa-5x"></i></button>
+            </div>
+            <div class="normal-info">
+                <span>Cable</span>
+                <span class="cable-contatiner"></span>
+                <span class="cable-indicator"></span>
+                <span class="cable val">0</span>
+            </div>
+            <div class="normal-btn">
+                <button type="button" id="cable_down"><i class="fas fa-arrow-down fa-5x"></i></button>
+            </div>
+            <div class="normal-info">
+                <br>
+                <span>Coin</span>
+                <span id="coin" class="dot coin-off"></span>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+
+<script>
+    function btn_activation(btn_id, url_target) {
+        $(btn_id).click(function() {
+            $.ajax({
+                url: url_target,
+                data: $('form').serialize(),
+                type: 'POST',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    }
+
+    function update_arm(pos) {
+        $('.rotation.val').text((pos % 360) + "°")
+        pos = (pos * 2 * Math.PI) / 360
+        var x = Math.cos(pos) * 38
+        var y = -Math.sin(pos) * 38
+        $(".center").css('box-shadow', x + 'px ' + y + 'px 0 red')
+    }
+
+    function update_cable(h) {
+        $('.cable.val').text(h)
+        var h_norm = h / (-247.9)
+        var y = 91 - (80 * h_norm)
+        $('.cable-indicator').css('bottom', y + 'px')
+    }
+
+    function update_distance(dist) {
+        $('.laser.val').text(dist)
+    }
+
+    function update_detection(detection){
+        if(detection === true){
+            $("#dot-up").first().addClass("up-on").removeClass("up-off")
+            $("#dot-down").first().addClass("down-off").removeClass("down-on")
+        }
+        else{
+            $("#dot-up").first().addClass("up-off").removeClass("up-on")
+            $("#dot-down").first().addClass("down-on").removeClass("down-off")
+        }
+    }
+
+    function update_coin(coin) {
+        if (coin === true) {
+            $("#coin").addClass("coin-on").removeClass("coin-off")
+        } else {
+            $("#coin").addClass("coin-off").removeClass("coin-on")
+        }
+    }
+
+    function update_values() {
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        $.getJSON($SCRIPT_ROOT+"/update_values",
+            function(data) {
+                update_arm(data.arm_position)
+                update_cable(data.cable_position)
+                update_distance(data.distance)
+                update_detection(data.detection)
+                update_coin(data.coin)
+            }
+        );
+    }
+
+    window.setInterval(function(){
+        update_values()
+    }, 500);
+
+    $(function() {
+        btn_activation("#rotate-anti-hour", '/rotate_anti_hour')
+        btn_activation("#rotate-hour", '/rotate_hour')
+        btn_activation("#cable_up", '/cable_up')
+        btn_activation("#cable_down", '/cable_down')
+        btn_activation("#turn_magnet", '/turn_magnet')
+    });
+</script>
