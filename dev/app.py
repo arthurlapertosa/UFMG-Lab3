@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_classful import FlaskView, route
 from firebaseSocket import Socket
 import pytz
@@ -43,6 +43,9 @@ class Gui(FlaskView):
         })
         return self._simulation_data
 
+    @route('/gui')
+    def gui(self):
+        return render_template('index.html')
 
 @app.route('/')
 def hello_world():
