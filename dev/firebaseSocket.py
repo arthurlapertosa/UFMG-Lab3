@@ -29,23 +29,3 @@ class Socket:
     def bind_db_listener(self, callback):
         self.ref.listen(callback)
 
-    def publish_command_event(self, method, target=None, handle=None):
-        data = {
-            'target': target,
-            'handle': handle,
-            # 'timestamp': firestore.SERVER_TIMESTAMP
-        }
-
-        self.db.reference('/' + method).update(data)
-
-    def publish_status_event(self, arm_position, cable_position, detection,
-                             distance, coin):
-        data = {
-            u'arm_position': arm_position,
-            u'cable_position': cable_position,
-            u'detection': detection,
-            u'distance': distance,
-            u'coin': coin,
-            u'timestamp': firestore.SERVER_TIMESTAMP
-        }
-        self.__publish_event(data, u'status')
