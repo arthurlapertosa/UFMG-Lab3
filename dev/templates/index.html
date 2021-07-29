@@ -6,5 +6,63 @@
 </head>
 <body>
     <div>Lab 3 - Grupo 1 :)</div>
+    <div class="_d-flex _flex-column">
+        <div>test: <span id="testValue"></span> <button onclick="incrementTest()">+</button></div>
+        <div>test2: <span id="testValue2"></span> <button onclick="incrementTest2()">+</button></div>
+    </div>
+    <div>
+        <button onclick="startStatsRefresh()">start</button>
+        <button onclick="stopStatsRefresh()">stop</button>
+    </div>
+
+    <style>
+        ._d-flex {
+            display: flex;
+        }
+        ._flex-column {
+            flex-direction: column;
+        }
+    </style>
+
+    <script>
+        let telemetryStatsRefreshMethod
+        const updateTelemetry = () => {
+            const testValue = document.getElementById('testValue')
+            const testValue2 = document.getElementById('testValue2')
+
+            fetch("/simulation_data", {
+              method: "GET"
+            }).then(response => response.json()).then(telemetryStats => {
+                console.log(telemetryStats)
+                testValue.textContent = telemetryStats.test
+                testValue2.textContent = telemetryStats.test2
+            })
+
+            telemetryStatsRefreshMethod = window.setTimeout(updateTelemetry, 500)
+        }
+
+        const startStatsRefresh = () => telemetryStatsRefreshMethod = window.setTimeout(updateTelemetry, 500)
+        const stopStatsRefresh = () => clearTimeout(telemetryStatsRefreshMethod)
+
+        startStatsRefresh()
+
+        const incrementTest = () => {
+            fetch("/increment_test", {
+              method: "POST",
+              body: {
+                // some: data
+              }
+            });
+        }
+
+        const incrementTest2 = () => {
+            fetch("/increment_test2", {
+              method: "POST",
+              body: {
+                // some: data
+              }
+            });
+        }
+    </script>
 </body>
 </html>

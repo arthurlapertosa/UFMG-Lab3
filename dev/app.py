@@ -29,14 +29,14 @@ class Gui(FlaskView):
     def simulation_data(self):
         return self._simulation_data
 
-    @route('/increment_test')
+    @route('/increment_test', methods=['GET', 'POST'])
     def increment_test(self):
         self.update_simulation_data({
             "test": self._simulation_data["test"] + 10
         })
         return self._simulation_data
 
-    @route('/increment_test2')
+    @route('/increment_test2', methods=['GET', 'POST'])
     def increment_test2(self):
         self.update_simulation_data({
             "test2": self._simulation_data["test2"] + 30
