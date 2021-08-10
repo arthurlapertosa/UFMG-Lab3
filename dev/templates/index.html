@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>GUI</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
-    <div>Lab 3 - Grupo 1 :)</div>
-    <div class="_d-flex _flex-column">
-        <div>test: <span id="testValue"></span> <button onclick="incrementTest()">+</button></div>
-        <div>test2: <span id="testValue2"></span> <button onclick="incrementTest2()">+</button></div>
-    </div>
-    <div>
-        <button onclick="startStatsRefresh()">start</button>
-        <button onclick="stopStatsRefresh()">stop</button>
-    </div>
 
-    <style>
-        ._d-flex {
-            display: flex;
-        }
-        ._flex-column {
-            flex-direction: column;
-        }
-    </style>
+<body>
+    <h1 class="title">Lab 3 - Grupo 1 :)</h1>
+    <div class="_d-flex _flex-column">
+        <div class="control-element">
+            Test:
+            <span class="badge badge-light" id="testValue"></span>
+            <button type="button" class="btn btn-primary" onclick="incrementTest()">+</button>
+            <button type="button" class="btn btn-warning" onclick="incrementTest()">-</button>
+        </div>
+        <div class="control-element">
+            Test2:
+            <span class="badge badge-light" id="testValue2"></span>
+            <button type="button" class="btn btn-primary" onclick="incrementTest2()">+</button>
+            <button type="button" class="btn btn-warning" onclick="incrementTest2()">-</button>
+        </div>
+    </div>
+    <div class="start-stop-buttons">
+        <button type="button" class="btn btn-success" onclick="startStatsRefresh()">Start</button>
+        <button type="button" class="btn btn-danger" onclick="stopStatsRefresh()">Stop</button>
+    </div>
 
     <script>
         let telemetryStatsRefreshMethod
@@ -31,7 +37,7 @@
             const testValue2 = document.getElementById('testValue2')
 
             fetch("/simulation_data", {
-              method: "GET"
+                method: "GET"
             }).then(response => response.json()).then(telemetryStats => {
                 console.log(telemetryStats)
                 testValue.textContent = telemetryStats.test
@@ -48,21 +54,22 @@
 
         const incrementTest = () => {
             fetch("/increment_test", {
-              method: "POST",
-              body: {
-                // some: data
-              }
+                method: "POST",
+                body: {
+                    // some: data
+                }
             });
         }
 
         const incrementTest2 = () => {
             fetch("/increment_test2", {
-              method: "POST",
-              body: {
-                // some: data
-              }
+                method: "POST",
+                body: {
+                    // some: data
+                }
             });
         }
     </script>
 </body>
+
 </html>
