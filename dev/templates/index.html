@@ -17,12 +17,15 @@
             <span class="badge badge-light" id="testValue"></span>
             <button type="button" class="btn btn-primary" onclick="incrementTest()">+</button>
             <button type="button" class="btn btn-warning" onclick="incrementTest()">-</button>
+            Valor desejado: <input class="input-control" id="testInput" value="" onfocusout="updateTest()"
+                onkeydown="updateTestEnter()"></input>
         </div>
         <div class="control-element">
             Test2:
             <span class="badge badge-light" id="testValue2"></span>
             <button type="button" class="btn btn-primary" onclick="incrementTest2()">+</button>
             <button type="button" class="btn btn-warning" onclick="incrementTest2()">-</button>
+            Valor desejado: <input class="input-control" id="test2Input" value="" disabled></input>
         </div>
     </div>
     <div class="start-stop-buttons">
@@ -68,6 +71,22 @@
                     // some: data
                 }
             });
+        }
+
+        const updateTest = () => {
+            const input = document.getElementById('testInput');
+            fetch(`/update_test/${input.value}`, {
+                method: "POST",
+                body: {}
+            }).then(() => {
+                input.value = ''
+            });
+        }
+
+        const updateTestEnter = () => {
+            if (event.key === 'Enter') {
+                updateTest()
+            }
         }
     </script>
 </body>

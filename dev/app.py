@@ -36,6 +36,13 @@ class Gui(FlaskView):
         })
         return self._simulation_data
 
+    @route('/update_test/<int:value>', methods=['GET', 'POST'])
+    def update_test(self, value):
+        self.update_simulation_data({
+            "test": value
+        })
+        return self._simulation_data
+
     @route('/increment_test2', methods=['GET', 'POST'])
     def increment_test2(self):
         self.update_simulation_data({

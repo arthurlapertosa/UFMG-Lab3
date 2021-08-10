@@ -12,6 +12,10 @@ body {
     text-align: center;
 }
 
+.input-control {
+    width: 40px;
+}
+
 .start-stop-buttons {
     text-align: center;
     margin-top: 15px;
