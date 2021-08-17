@@ -16,7 +16,10 @@ class Gui(FlaskView):
             'arm_actuator': 0,
             'crab_actuator': 0,
             'hoist_actuator': 0,
-            'suction_pad': False
+            'crab_rotation_actuator': 0,
+            'suction_pad': False,
+            'distance_from_environment': 0,
+            'suction_pad_force_sensor': False
         }
         # Resetting firebase db data
         self._socket.set_db_data(self._simulation_data)
@@ -54,6 +57,13 @@ class Gui(FlaskView):
     def update_hoist_actuator(self, value):
         self.update_simulation_data({
             'hoist_actuator': value
+        })
+        return self._simulation_data
+
+    @route('/update_crab_rotation_actuator/<signed_int:value>', methods=['GET', 'POST'])
+    def update_crab_rotation_actuator(self, value):
+        self.update_simulation_data({
+            'crab_rotation_actuator': value
         })
         return self._simulation_data
 

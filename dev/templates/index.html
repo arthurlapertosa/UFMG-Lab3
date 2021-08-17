@@ -13,7 +13,7 @@
     <h1 class="title">Lab 3 - Grupo 1 :)</h1>
     <div class="_d-flex _flex-column">
         <div class="control-element">
-            Braço:
+            Rotação da lança:
             <span class="badge badge-light" id="armText"></span>
             <button type="button" class="btn btn-primary" title="arm" onclick="incrementValue(this)">+</button>
             <button type="button" class="btn btn-warning" title="arm" onclick="decrementValue(this)">-</button>
@@ -21,7 +21,7 @@
                 onkeydown="updateValueEnter(this)"></input>
         </div>
         <div class="control-element">
-            Crab:
+            Altura da ferramenta:
             <span class="badge badge-light" id="crabText"></span>
             <button type="button" class="btn btn-primary" title="crab" onclick="incrementValue(this)">+</button>
             <button type="button" class="btn btn-warning" title="crab" onclick="decrementValue(this)">-</button>
@@ -29,7 +29,7 @@
                 onkeydown="updateValueEnter(this)"></input>
         </div>
         <div class="control-element">
-            Hoist:
+            Avanço da ferramenta:
             <span class="badge badge-light" id="hoistText"></span>
             <button type="button" class="btn btn-primary" title="hoist" onclick="incrementValue(this)">+</button>
             <button type="button" class="btn btn-warning" title="hoist" onclick="decrementValue(this)">-</button>
@@ -37,9 +37,27 @@
                 onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
         </div>
         <div class="control-element">
+            Rotação da ferramenta:
+            <span class="badge badge-light" id="crab_rotationText"></span>
+            <button type="button" class="btn btn-primary" title="crab_rotation"
+                onclick="incrementValue(this)">+</button>
+            <button type="button" class="btn btn-warning" title="crab_rotation"
+                onclick="decrementValue(this)">-</button>
+            Valor desejado: <input class="input-control" title="crab_rotation" id="crab_rotation" value=""
+                onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
+        </div>
+        <div class="control-element">
             Ferramenta:
-            <span class="badge badge-light" id="suctionText"></span>
+            <span class="" id="suctionText"></span>
             <button type="button" class="" title="suction" id="suctionButton" onclick="toggleTool()"></button>
+        </div>
+        <div class="control-element">
+            Sensor de carga da ferramenta:
+            <span class="" id="forceSensorText"></span>
+        </div>
+        <div class="control-element">
+            Distância do ambiente:
+            <span class="badge badge-light" id="distanceFromEnvironmentValue"></span>
         </div>
     </div>
     <!-- <div class="start-stop-buttons">
@@ -53,8 +71,11 @@
             const armValue = document.getElementById('armText')
             const crabValue = document.getElementById('crabText')
             const hoistValue = document.getElementById('hoistText')
+            const crabRotationText = document.getElementById('crab_rotationText')
             const suctionValue = document.getElementById('suctionText')
             const suctionButton = document.getElementById('suctionButton')
+            const forceSensorText = document.getElementById('forceSensorText');
+            const distanceFromEnvironmentValue = document.getElementById('distanceFromEnvironmentValue');
 
             fetch("/simulation_data", {
                 method: "GET"
@@ -63,14 +84,26 @@
                 armValue.textContent = telemetryStats.arm_actuator
                 crabValue.textContent = telemetryStats.crab_actuator
                 hoistValue.textContent = telemetryStats.hoist_actuator
+                crabRotationText.textContent = telemetryStats.crab_rotation_actuator
+                distanceFromEnvironmentValue.textContent = telemetryStats.distance_from_environment
+
                 if (telemetryStats.suction_pad) {
                     suctionValue.textContent = "Ativado"
+                    suctionValue.className = "badge badge-success"
                     suctionButton.textContent = "Desativar"
                     suctionButton.className = "btn btn-danger"
                 } else {
                     suctionValue.textContent = "Desativado"
+                    suctionValue.className = "badge badge-danger"
                     suctionButton.textContent = "Ativar"
                     suctionButton.className = "btn btn-success"
+                }
+                if (telemetryStats.suction_pad_force_sensor) {
+                    forceSensorText.textContent = "Detectado"
+                    forceSensorText.className = "badge badge-success"
+                } else {
+                    forceSensorText.textContent = "Não detectado"
+                    forceSensorText.className = "badge badge-danger"
                 }
             })
 
