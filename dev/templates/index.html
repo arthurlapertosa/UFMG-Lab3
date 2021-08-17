@@ -17,34 +17,35 @@
             <span class="badge badge-light" id="armText"></span>
             <button type="button" class="btn btn-primary" title="arm" onclick="incrementValue(this)">+</button>
             <button type="button" class="btn btn-warning" title="arm" onclick="decrementValue(this)">-</button>
-            Valor desejado: <input class="input-control" title="arm" id="arm" value=""
-                onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
+            Valor desejado: <input class="input-control" title="arm" id="arm" value="" onfocusout="updateValue(this)"
+                onkeydown="updateValueEnter(this)"></input>
         </div>
         <div class="control-element">
             Crab:
             <span class="badge badge-light" id="crabText"></span>
-            <button type="button" class="btn btn-primary" title="crab"
-                onclick="incrementValue(this)">+</button>
-            <button type="button" class="btn btn-warning" title="crab"
-                onclick="decrementValue(this)">-</button>
-            Valor desejado: <input class="input-control" title="crab" id="crab" value=""
-                onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
+            <button type="button" class="btn btn-primary" title="crab" onclick="incrementValue(this)">+</button>
+            <button type="button" class="btn btn-warning" title="crab" onclick="decrementValue(this)">-</button>
+            Valor desejado: <input class="input-control" title="crab" id="crab" value="" onfocusout="updateValue(this)"
+                onkeydown="updateValueEnter(this)"></input>
         </div>
         <div class="control-element">
             Hoist:
             <span class="badge badge-light" id="hoistText"></span>
-            <button type="button" class="btn btn-primary" title="hoist"
-                onclick="incrementValue(this)">+</button>
-            <button type="button" class="btn btn-warning" title="hoist"
-                onclick="decrementValue(this)">-</button>
+            <button type="button" class="btn btn-primary" title="hoist" onclick="incrementValue(this)">+</button>
+            <button type="button" class="btn btn-warning" title="hoist" onclick="decrementValue(this)">-</button>
             Valor desejado: <input class="input-control" title="hoist" id="hoist" value=""
                 onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
         </div>
+        <div class="control-element">
+            Ferramenta:
+            <span class="badge badge-light" id="suctionText"></span>
+            <button type="button" class="" title="suction" id="suctionButton" onclick="toggleTool()"></button>
+        </div>
     </div>
-    <div class="start-stop-buttons">
+    <!-- <div class="start-stop-buttons">
         <button type="button" class="btn btn-success" onclick="startStatsRefresh()">Start</button>
         <button type="button" class="btn btn-danger" onclick="stopStatsRefresh()">Stop</button>
-    </div>
+    </div> -->
 
     <script>
         let telemetryStatsRefreshMethod
@@ -52,6 +53,8 @@
             const armValue = document.getElementById('armText')
             const crabValue = document.getElementById('crabText')
             const hoistValue = document.getElementById('hoistText')
+            const suctionValue = document.getElementById('suctionText')
+            const suctionButton = document.getElementById('suctionButton')
 
             fetch("/simulation_data", {
                 method: "GET"
@@ -60,6 +63,15 @@
                 armValue.textContent = telemetryStats.arm_actuator
                 crabValue.textContent = telemetryStats.crab_actuator
                 hoistValue.textContent = telemetryStats.hoist_actuator
+                if (telemetryStats.suction_pad) {
+                    suctionValue.textContent = "Ativado"
+                    suctionButton.textContent = "Desativar"
+                    suctionButton.className = "btn btn-danger"
+                } else {
+                    suctionValue.textContent = "Desativado"
+                    suctionButton.textContent = "Ativar"
+                    suctionButton.className = "btn btn-success"
+                }
             })
 
             telemetryStatsRefreshMethod = window.setTimeout(updateTelemetry, 500)
@@ -98,6 +110,23 @@
 
         const decrementValue = (button) => {
             decIncValue(button, -10)
+        }
+
+        const updateSuction = (value) => {
+            fetch(`/update_suction_pad/${value}`, {
+                method: "POST",
+                body: {}
+            });
+        }
+
+        const toggleTool = () => {
+            const suctionValue = document.getElementById('suctionText')
+            if (suctionValue.textContent === "Ativado") {
+                updateSuction(0);
+            }
+            if (suctionValue.textContent === "Desativado") {
+                updateSuction(1);
+            }
         }
     </script>
 </body>
