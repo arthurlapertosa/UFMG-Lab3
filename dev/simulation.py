@@ -23,15 +23,13 @@ class Simulation:
         self._socket = Socket({"name": "client"}, credentialsFile="firebaseCredentials.json")
         self._socket.bind_db_listener(self.on_snapshot)
 
-        self._simulation_data = {
-            "test": 0,
-            "test2": 0
-        }
-
         if self._clientID != -1:
             print('Connected to remote API server')
             sim.simxAddStatusbarMessage(self._clientID, 'Hello CoppeliaSim!', sim.simx_opmode_oneshot)
             self._arm_actuator = self.start_handle("Arm_actuator")
+            self._crab_actuator = self.start_handle("Crab_actuator")
+            self._hoist_actuator = self.start_handle("Hoist_actuator")
+            self._suction_pad_status = False
         else:
             print('Failed connecting to remote API server')
 
@@ -45,8 +43,11 @@ class Simulation:
 
     def on_snapshot(self, _data):
         db_data = self._socket.get_db_data()
-        sim.simxAddStatusbarMessage(self._clientID, 'Teste atualização da velocidade do braço: ' + str(db_data["test"]), sim.simx_opmode_oneshot)
-        sim.simxSetJointTargetVelocity(self._clientID, self._arm_actuator, db_data["test"], sim.simx_opmode_streaming)
+        sim.simxAddStatusbarMessage(self._clientID, 'Atualizando dados...', sim.simx_opmode_oneshot)
+        sim.simxSetJointTargetVelocity(self._clientID, self._arm_actuator, db_data["arm_actuator"]/1000, sim.simx_opmode_streaming)
+        sim.simxSetJointTargetVelocity(self._clientID, self._crab_actuator, db_data["crab_actuator"]/100, sim.simx_opmode_streaming)
+        sim.simxSetJointTargetVelocity(self._clientID, self._hoist_actuator, db_data["hoist_actuator"]/100, sim.simx_opmode_streaming)
+        self.handle_suction_pad(db_data["suction_pad"])
 
     def stop(self):
         sim.simxAddStatusbarMessage(self._clientID, 'Bye CoppeliaSim!', sim.simx_opmode_oneshot)
@@ -57,9 +58,17 @@ class Simulation:
         return_code, handle = sim.simxGetObjectHandle(self._clientID, handle, sim.simx_opmode_blocking)
         return handle if return_code == 0 else print(f'Failed to start handle: {handle}')
 
+    def handle_suction_pad(self, status):
+        if status != self._suction_pad_status:
+            self._suction_pad_status = status
+            sim.simxCallScriptFunction(self._clientID, "Base",
+                                       sim.sim_scripttype_childscript,
+                                       "actuateMagnet",
+                                       [], [], [], "0", sim.simx_opmode_blocking)
 
-simulation = Simulation()
+if __name__ == '__main__':
+    simulation = Simulation()
 
-simulation.start()
-# time.sleep(30)
-# simulation.stop()
+    simulation.start()
+    # time.sleep(30)
+    # simulation.stop()
