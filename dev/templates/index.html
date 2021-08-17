@@ -122,10 +122,10 @@
         const toggleTool = () => {
             const suctionValue = document.getElementById('suctionText')
             if (suctionValue.textContent === "Ativado") {
-                updateSuction(0);
+                return updateSuction(0);
             }
             if (suctionValue.textContent === "Desativado") {
-                updateSuction(1);
+                return updateSuction(1);
             }
         }
     </script>
