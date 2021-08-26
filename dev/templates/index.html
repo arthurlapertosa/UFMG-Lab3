@@ -12,52 +12,81 @@
 <body>
     <div class="controls-wrapper">
         <h1 class="title">Lab 3 - Grupo A :)</h1>
-        <div class="_d-flex _flex-column">
+        <div class="control-group">
             <div class="control-element">
-                Rotação da lança:
-                <span class="badge badge-light" id="armText"></span>
-                <button type="button" class="btn btn-primary" title="arm" onclick="incrementValue(this)">+</button>
-                <button type="button" class="btn btn-warning" title="arm" onclick="decrementValue(this)">-</button>
-                Valor desejado: <input class="input-control" title="arm" id="arm" value=""
-                    onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
+                <span class="item-label">Rotação da lança:</span>
+                <div class="button-group">
+                    <button type="button" class="btn button-plus" title="arm" onclick="incrementValue(this)">+</button>
+                    <span class="badge badge-light" id="armText"></span>
+                    <button type="button" class="btn button-minus" title="arm" onclick="decrementValue(this)">-</button>
+                </div>
+                <div class="input-group">
+                    <span>Valor desejado:</span>
+                    <input class="input-control" title="arm" id="arm" value=""
+                        onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
+                    </input>
+                </div>
             </div>
             <div class="control-element">
-                Altura da ferramenta:
-                <span class="badge badge-light" id="crabText"></span>
-                <button type="button" class="btn btn-primary" title="crab" onclick="incrementValue(this)">+</button>
-                <button type="button" class="btn btn-warning" title="crab" onclick="decrementValue(this)">-</button>
-                Valor desejado: <input class="input-control" title="crab" id="crab" value=""
-                    onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
+                <span class="item-label">Altura da ferramenta:</span>
+                <div class="button-group">
+                    <button type="button" class="btn button-plus" title="crab" onclick="incrementValue(this)">+</button>
+                    <span class="badge badge-light" id="crabText"></span>
+                    <button type="button" class="btn button-minus" title="crab" onclick="decrementValue(this)">-</button>
+                </div>
+                <div class="input-group">
+                    <span>Valor desejado:</span>
+                    <input class="input-control" title="crab" id="crab" value=""
+                        onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
+                    </input>
+                </div>
             </div>
             <div class="control-element">
-                Avanço da ferramenta:
-                <span class="badge badge-light" id="hoistText"></span>
-                <button type="button" class="btn btn-primary" title="hoist" onclick="incrementValue(this)">+</button>
-                <button type="button" class="btn btn-warning" title="hoist" onclick="decrementValue(this)">-</button>
-                Valor desejado: <input class="input-control" title="hoist" id="hoist" value=""
-                    onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
+                <span class="item-label">Avanço da ferramenta:</span>
+                <div class="button-group">
+                    <button type="button" class="btn button-plus" title="hoist" onclick="incrementValue(this)">+</button>
+                    <span class="badge badge-light" id="hoistText"></span>
+                    <button type="button" class="btn button-minus" title="hoist" onclick="decrementValue(this)">-</button>
+                </div>
+                <div class="input-group">
+                    <span>Valor desejado:</span> 
+                    <input class="input-control" title="hoist" id="hoist" value=""
+                        onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
+                    </input>
+                </div>
             </div>
             <div class="control-element">
-                Rotação da ferramenta:
-                <span class="badge badge-light" id="crab_rotationText"></span>
-                <button type="button" class="btn btn-primary" title="crab_rotation"
-                    onclick="incrementValue(this)">+</button>
-                <button type="button" class="btn btn-warning" title="crab_rotation"
-                    onclick="decrementValue(this)">-</button>
-                Valor desejado: <input class="input-control" title="crab_rotation" id="crab_rotation" value=""
-                    onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)"></input>
+                <span class="item-label">Rotação da ferramenta:</span>
+                <div class="button-group">
+                    <button type="button" class="btn button-plus" title="crab_rotation"
+                        onclick="incrementValue(this)">+</button>
+                    <span class="badge badge-light" id="crab_rotationText"></span>
+                    <button type="button" class="btn button-minus" title="crab_rotation"
+                        onclick="decrementValue(this)">-</button>
+                </div>
+                    <div class="input-group">
+                        <span>Valor desejado:</span>
+                        <input class="input-control" title="crab_rotation" id="crab_rotation" value=""
+                            onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
+                        </input>
+                    </div>
             </div>
             <div class="control-element">
-                Ferramenta:
-                <span class="" id="suctionText"></span>
-                <button type="button" class="" title="suction" id="suctionButton" onclick="toggleTool()"></button>
+                <span class="item-label">Ferramenta:</span>
+                <div class="tool-group">
+                    <button type="button" class="" title="suction" id="suctionButton" onclick="toggleTool()"></button>
+                    <div class="state-group">
+                        <span class="state-label">Estado:</span>
+                        <span class="" id="suctionText"></span>
+                    </div>
+                </div>
             </div>
             <div class="control-element">
-                Sensor de carga da ferramenta:
+                <span class="item-label">Sensor de carga:</span>
                 <span class="" id="forceSensorText"></span>
             </div>
             <div class="control-element">
-                Distância do ambiente:
+                <span class="item-label">Distância do ambiente:</span>
                 <span class="badge badge-light" id="distanceFromEnvironmentValue"></span>
             </div>
         </div>

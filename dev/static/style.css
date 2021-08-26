@@ -1,13 +1,16 @@
 body {
-    background: linear-gradient(45deg, rgba(205,255,158,1) 0%, rgba(118,255,187,1) 100%);
+    background: url('./dock-bg.jpg') center center no-repeat;
+    background-size: cover;
+    overflow-y: hidden;
     height: 100vh;
 }
 
 .controls-wrapper {
     margin: 10px auto;
-    width: 40%;
-    border: 3px solid green;
-    padding: 10px;
+    padding: 20px;
+    width: 50%;
+    border: 3px solid #004a50;
+    background: #81cdd3e6;
 }
 
 .title {
@@ -15,17 +18,59 @@ body {
     margin-bottom: 40px;
 }
 
-.control-element {
-    margin-top: 10px;
+.control-group {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 10px;
+    width: 100%;
 }
+
+.control-element {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.item-label { width: 30%; }
+
+.input-group { width: 30%; }
 
 .input-control {
     width: 40px;
+    font-size: 12px;
+    border: none;
+    border-radius: 8px;
+    margin-left: 5px;
 }
 
-.start-stop-buttons {
-    margin-top: 15px;
+.button-group {
+    display: flex;
+    align-items: center;
+    grid-gap: 4px;
+    width: 17.5%;
 }
+.button-plus, .button-minus {
+    background: rgb(255, 134, 22);
+    color: white;
+    width: 36px;
+    border-radius: 8px;
+    padding: 0;
+}
+
+.tool-group {
+    display: flex;
+    width: 70%;
+    grid-gap: 3%;
+}
+
+.state-group {
+    display: flex;
+    align-items: center;
+}
+
+.tool-group button { width: 95px; }
+.state-group #suctionText { width: 75px; margin: auto 0 auto 10px; }
+
+.start-stop-buttons { margin-top: 15px; }
 
 @media screen and (max-width: 992px) {
     .controls-wrapper {
