@@ -7,16 +7,19 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <div class="controls-wrapper">
         <h1 class="title">Lab 3 - Grupo A :)</h1>
         <div class="control-group">
+            <img src="" alt="" id="base64image" width="160" height="160">
             <div class="control-element">
                 <span class = "image-box">
                     <img class = "img-fluid" src="/static/lanca_rotacao.jpeg">
                 </span>
+                <div>Vel: <div id="armValue">0</div></div>
                 <span class="item-label">Rotação da lança:</span>
                 <div class="button-group">
                     <button type="button" class="btn button-plus" title="arm" onclick="incrementValue(this)">+</button>
@@ -58,7 +61,7 @@
                     <button type="button" class="btn button-minus" title="hoist" onclick="decrementValue(this)">-</button>
                 </div>
                 <div class="input-group">
-                    <span>Valor desejado:</span> 
+                    <span>Valor desejado:</span>
                     <input class="input-control" title="hoist" id="hoist" value=""
                         onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
                     </input>
@@ -122,13 +125,13 @@
             const crabRotationText = document.getElementById('crab_rotationText')
             const suctionValue = document.getElementById('suctionText')
             const suctionButton = document.getElementById('suctionButton')
-            const forceSensorText = document.getElementById('forceSensorText');
-            const distanceFromEnvironmentValue = document.getElementById('distanceFromEnvironmentValue');
+            const forceSensorText = document.getElementById('forceSensorText')
+            const distanceFromEnvironmentValue = document.getElementById('distanceFromEnvironmentValue')
 
             fetch("/simulation_data", {
                 method: "GET"
             }).then(response => response.json()).then(telemetryStats => {
-                console.log(telemetryStats)
+                // console.log(telemetryStats)
                 armValue.textContent = telemetryStats.arm_actuator
                 crabValue.textContent = telemetryStats.crab_actuator
                 hoistValue.textContent = telemetryStats.hoist_actuator
@@ -157,6 +160,24 @@
 
             telemetryStatsRefreshMethod = window.setTimeout(updateTelemetry, 500)
         }
+
+
+        const socket = io("http://localhost:8765")
+
+        socket.on("connect", (socket) => {
+          console.log(socket); // prints { x: "42", EIO: "4", transport: "polling" }
+        });
+
+        socket.on("message", (message) => {
+            const base64image = document.getElementById('base64image')
+            const arm_actuator_data = document.getElementById('armValue')
+
+            base64image.src = message.camera_image
+            arm_actuator_data.innerText = message.arm_data
+        });
+
+        window.setInterval(() => socket.emit('telemetry'), 200)
+
 
         const startStatsRefresh = () => telemetryStatsRefreshMethod = window.setTimeout(updateTelemetry, 500)
         const stopStatsRefresh = () => clearTimeout(telemetryStatsRefreshMethod)

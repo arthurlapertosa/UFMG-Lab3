@@ -19,7 +19,8 @@ class Gui(FlaskView):
             'crab_rotation_actuator': 0,
             'suction_pad': False,
             'distance_from_environment': 0,
-            'suction_pad_force_sensor': False
+            'suction_pad_force_sensor': False,
+            'base64img': ''
         }
         # Resetting firebase db data
         self._socket.set_db_data(self._simulation_data)
@@ -74,12 +75,14 @@ class Gui(FlaskView):
         })
         return self._simulation_data
 
-@app.route('/')
-def hello_world():
-    return 'Lab 3 - Grupo 1'
+    @route('/')
+    def hello_world(self):
+        return 'Lab 3 - Grupo 1'
+
 
 class SignedIntConverter(IntegerConverter):
     regex = r'-?\d+'
+
 
 app.url_map.converters['signed_int'] = SignedIntConverter
 

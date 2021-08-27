@@ -8,10 +8,15 @@
 #
 # IMPORTANT: for each successful call to simxStart, there
 # should be a corresponding call to simxFinish at the end!
-
+from base64 import b64encode
+import numpy as np
+import io
+from PIL import Image
 import sim
 from firebaseSocket import Socket
 import time
+import eventlet
+import socketio
 
 
 class Simulation:
@@ -29,7 +34,30 @@ class Simulation:
             self._arm_actuator = self.start_handle("Arm_actuator")
             self._crab_actuator = self.start_handle("Crab_actuator")
             self._hoist_actuator = self.start_handle("Hoist_actuator")
+            self._proximity_sensor = self.start_handle("Proximity_sensor")
             self._suction_pad_status = False
+            self._vision_sensor = self.start_handle("Vision_sensor")
+
+            self.sio = socketio.Server(cors_allowed_origins="*")
+            self.app = socketio.WSGIApp(self.sio)
+
+            @self.sio.event
+            def connect(sid):
+                print('connect ', sid)
+                self.sio.emit('connected', {'data': sid})
+
+            @self.sio.event
+            def disconnect(sid):
+                print('disconnect ', sid)
+                self.sio.emit('disconnect', {'data': sid})
+
+            @self.sio.event
+            def telemetry():
+                camera_image = self.get_vision_sensor_base_64_image()
+                # print(camera_image)
+
+                self.sio.emit('message', {'camera_image': camera_image, 'arm_data': 101})
+
         else:
             print('Failed connecting to remote API server')
 
@@ -38,6 +66,7 @@ class Simulation:
         res, objs = sim.simxGetObjects(self._clientID, sim.sim_handle_all, sim.simx_opmode_blocking)
         if res == sim.simx_return_ok:
             print('Number of objects in the scene: ', len(objs))
+            self.sio.emit('message', {'data': len(objs)})
         else:
             print('Remote API function call returned with error code: ', res)
 
@@ -66,9 +95,33 @@ class Simulation:
                                        "actuateMagnet",
                                        [], [], [], "0", sim.simx_opmode_blocking)
 
+    def get_proximity_sensor_data(self):
+        proximity_data = sim.simxReadProximitySensor(self._clientID, self._proximity_sensor, sim.simx_opmode_streaming)
+        return proximity_data[2][2]
+
+    def get_vision_sensor_base_64_image(self):
+        error_code, resolution, image = sim.simxGetVisionSensorImage(self._clientID, self._vision_sensor, 0, sim.simx_opmode_streaming)
+        # print('vision_image',  error_code, resolution, image)
+
+        if resolution:
+            # Process the image to the format (64,64,3)
+            sensor_image = []
+            sensor_image = np.array(image, dtype=np.uint8)
+            sensor_image.resize([resolution[0], resolution[1], 3])
+
+            file_object = io.BytesIO()
+            img = Image.fromarray(sensor_image.astype('uint8'))
+            img.save(file_object, 'PNG')
+            base64img = "data:image/png;base64," + b64encode(file_object.getvalue()).decode('ascii')
+
+            return base64img
+
+
 if __name__ == '__main__':
     simulation = Simulation()
 
     simulation.start()
+    eventlet.wsgi.server(eventlet.listen(('', 8765)), simulation.app)
+
     # time.sleep(30)
     # simulation.stop()
