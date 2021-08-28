@@ -18,9 +18,7 @@ class Gui(FlaskView):
             'hoist_actuator': 0,
             'crab_rotation_actuator': 0,
             'suction_pad': False,
-            'distance_from_environment': 0,
-            'suction_pad_force_sensor': False,
-            'base64img': ''
+            'suction_pad_force_sensor': False
         }
         # Resetting firebase db data
         self._socket.set_db_data(self._simulation_data)

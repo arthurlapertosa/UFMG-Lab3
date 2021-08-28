@@ -86,4 +86,14 @@ body {
       width: 95%;
     }
 }
+
+.camera-images {
+    display: flex;
+    justify-content: space-around;
+}
+
+.camera-image {
+    width: 300px;
+    transform: rotate(180deg);
+}
   

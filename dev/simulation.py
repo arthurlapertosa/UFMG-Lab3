@@ -34,15 +34,17 @@ class Simulation:
             self._arm_actuator = self.start_handle("Arm_actuator")
             self._crab_actuator = self.start_handle("Crab_actuator")
             self._hoist_actuator = self.start_handle("Hoist_actuator")
-            self._proximity_sensor = self.start_handle("Proximity_sensor")
+            self._crab_rotation_actuator = self.start_handle("Crab_Rotation_actuator")
             self._suction_pad_status = False
+            self._proximity_sensor = self.start_handle("Proximity_sensor")
             self._vision_sensor = self.start_handle("Vision_sensor")
+            self._vision_sensor_0 = self.start_handle("Vision_sensor1")
 
             self.sio = socketio.Server(cors_allowed_origins="*")
             self.app = socketio.WSGIApp(self.sio)
 
             @self.sio.event
-            def connect(sid):
+            def connect(sid, env):
                 print('connect ', sid)
                 self.sio.emit('connected', {'data': sid})
 
@@ -52,11 +54,23 @@ class Simulation:
                 self.sio.emit('disconnect', {'data': sid})
 
             @self.sio.event
-            def telemetry():
-                camera_image = self.get_vision_sensor_base_64_image()
-                # print(camera_image)
+            def telemetry(sid):
+                camera_image = self.get_vision_sensor_base_64_image(self._vision_sensor)
+                camera_image_0 = self.get_vision_sensor_base_64_image(self._vision_sensor_0)
+                x, arm_data = self.get_joint_position(self._arm_actuator)
+                x, crab_data = self.get_joint_position(self._crab_actuator)
+                x, hoist_data = self.get_joint_position(self._hoist_actuator)
+                x, crab_rotation_data = self.get_joint_position(self._crab_rotation_actuator)
+                # print(hoist_data)
 
-                self.sio.emit('message', {'camera_image': camera_image, 'arm_data': 101})
+                self.sio.emit('message', {
+                    'camera_image': camera_image,
+                    'camera_image_0': camera_image_0,
+                    'arm_data': arm_data,
+                    'crab_data': crab_data,
+                    'hoist_data': hoist_data,
+                    'crab_rotation_data': crab_rotation_data
+                })
 
         else:
             print('Failed connecting to remote API server')
@@ -76,6 +90,7 @@ class Simulation:
         sim.simxSetJointTargetVelocity(self._clientID, self._arm_actuator, db_data["arm_actuator"]/1000, sim.simx_opmode_streaming)
         sim.simxSetJointTargetVelocity(self._clientID, self._crab_actuator, db_data["crab_actuator"]/100, sim.simx_opmode_streaming)
         sim.simxSetJointTargetVelocity(self._clientID, self._hoist_actuator, db_data["hoist_actuator"]/100, sim.simx_opmode_streaming)
+        sim.simxSetJointTargetVelocity(self._clientID, self._crab_rotation_actuator, db_data["crab_rotation_actuator"]/1000, sim.simx_opmode_streaming)
         self.handle_suction_pad(db_data["suction_pad"])
 
     def stop(self):
@@ -99,8 +114,8 @@ class Simulation:
         proximity_data = sim.simxReadProximitySensor(self._clientID, self._proximity_sensor, sim.simx_opmode_streaming)
         return proximity_data[2][2]
 
-    def get_vision_sensor_base_64_image(self):
-        error_code, resolution, image = sim.simxGetVisionSensorImage(self._clientID, self._vision_sensor, 0, sim.simx_opmode_streaming)
+    def get_vision_sensor_base_64_image(self, vision_sensor):
+        error_code, resolution, image = sim.simxGetVisionSensorImage(self._clientID, vision_sensor, 0, sim.simx_opmode_streaming)
         # print('vision_image',  error_code, resolution, image)
 
         if resolution:
@@ -116,6 +131,8 @@ class Simulation:
 
             return base64img
 
+    def get_joint_position(self, joint):
+        return sim.simxGetJointPosition(self._clientID, joint, sim.simx_opmode_streaming)
 
 if __name__ == '__main__':
     simulation = Simulation()

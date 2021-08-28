@@ -14,12 +14,15 @@
     <div class="controls-wrapper">
         <h1 class="title">Lab 3 - Grupo A :)</h1>
         <div class="control-group">
-            <img src="" alt="" id="base64image" width="160" height="160">
+            <div class="camera-images">
+                <img id="base64image" class="camera-image">
+                <img id="base64image0" class="camera-image">
+            </div>
             <div class="control-element">
                 <span class = "image-box">
                     <img class = "img-fluid" src="/static/lanca_rotacao.jpeg">
                 </span>
-                <div>Vel: <div id="armValue">0</div></div>
+                <div id="armValue">0</div>
                 <span class="item-label">Rotação da lança:</span>
                 <div class="button-group">
                     <button type="button" class="btn button-plus" title="arm" onclick="incrementValue(this)">+</button>
@@ -37,7 +40,8 @@
                 <span class = "image-box">
                     <img class = "img-fluid" src="/static/ferramenta_altura.jpeg">
                 </span>
-                <span class="item-label">Altura da ferramenta:</span>
+                <div id="crabValue">0</div>
+                <span class="item-label">Avanço da ferramenta:</span>
                 <div class="button-group">
                     <button type="button" class="btn button-plus" title="crab" onclick="incrementValue(this)">+</button>
                     <span class="badge badge-light" id="crabText"></span>
@@ -54,7 +58,8 @@
                 <span class = "image-box">
                     <img class = "img-fluid" src="/static/ferramenta_avanco.jpeg">
                 </span>
-                <span class="item-label">Avanço da ferramenta:</span>
+                <div id="hoistValue">0</div>
+                <span class="item-label">Altura da ferramenta:</span>
                 <div class="button-group">
                     <button type="button" class="btn button-plus" title="hoist" onclick="incrementValue(this)">+</button>
                     <span class="badge badge-light" id="hoistText"></span>
@@ -71,6 +76,7 @@
                 <span class = "image-box">
                     <img class = "img-fluid" src="/static/ferramenta_rotacao.jpeg">
                 </span>
+                <div id="crabRotationValue">0</div>
                 <span class="item-label">Rotação da ferramenta:</span>
                 <div class="button-group">
                     <button type="button" class="btn button-plus" title="crab_rotation"
@@ -106,8 +112,8 @@
             </div>
             <div class="control-element bottom-elements">
                 <span class = "image-box"></span>
-                <span class="item-label">Distância do ambiente:</span>
-                <span class="badge badge-light" id="distanceFromEnvironmentValue"></span>
+                <span class="item-label">Distância do objeto:</span>
+                <span class="badge badge-light" id="proximitySensor"></span>
             </div>
         </div>
         <!-- <div class="start-stop-buttons">
@@ -126,7 +132,6 @@
             const suctionValue = document.getElementById('suctionText')
             const suctionButton = document.getElementById('suctionButton')
             const forceSensorText = document.getElementById('forceSensorText')
-            const distanceFromEnvironmentValue = document.getElementById('distanceFromEnvironmentValue')
 
             fetch("/simulation_data", {
                 method: "GET"
@@ -136,7 +141,6 @@
                 crabValue.textContent = telemetryStats.crab_actuator
                 hoistValue.textContent = telemetryStats.hoist_actuator
                 crabRotationText.textContent = telemetryStats.crab_rotation_actuator
-                distanceFromEnvironmentValue.textContent = telemetryStats.distance_from_environment
 
                 if (telemetryStats.suction_pad) {
                     suctionValue.textContent = "Ativado"
@@ -165,15 +169,27 @@
         const socket = io("http://localhost:8765")
 
         socket.on("connect", (socket) => {
-          console.log(socket); // prints { x: "42", EIO: "4", transport: "polling" }
+          console.log(socket); // print`s { x: "42", EIO: "4", transport: "polling" }
         });
 
         socket.on("message", (message) => {
             const base64image = document.getElementById('base64image')
+            const base64image0 = document.getElementById('base64image0')
             const arm_actuator_data = document.getElementById('armValue')
+            const crab_actuator_data = document.getElementById('crabValue')
+            const hoist_actuator_data = document.getElementById('hoistValue')
+            const crab_rotation_actuator_data = document.getElementById('crabRotationValue')
+            const proximity_sensor = document.getElementById('proximitySensor')
+            // const suction_data = document.getElementById('suctionData')
 
             base64image.src = message.camera_image
-            arm_actuator_data.innerText = message.arm_data
+            base64image0.src = message.camera_image_0
+            arm_actuator_data.innerText = message.arm_data.toFixed(2)
+            crab_actuator_data.innerText = message.crab_data.toFixed(2)
+            hoist_actuator_data.innerText = message.hoist_data.toFixed(2)
+            crab_rotation_actuator_data.innerText = message.crab_rotation_data.toFixed(2)
+            proximity_sensor.textContent = message.proximity_data
+            // suction_data.textContent = message.suction_data
         });
 
         window.setInterval(() => socket.emit('telemetry'), 200)
