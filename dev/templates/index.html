@@ -166,8 +166,8 @@
         }
 
 
-        const socket = io("http://localhost:8765")
-
+        // const socket = io("http://localhost:8765")
+        const socket = io('http://acce-177-55-224-173.ngrok.io')
         socket.on("connect", (socket) => {
           console.log(socket); // print`s { x: "42", EIO: "4", transport: "polling" }
         });
