@@ -39,6 +39,10 @@ class Simulation:
             self._proximity_sensor = self.start_handle("Proximity_sensor")
             self._vision_sensor = self.start_handle("Vision_sensor")
             self._vision_sensor_0 = self.start_handle("Vision_sensor1")
+            self._container1 = self.start_handle("Container1")
+            self._container2 = self.start_handle("Container2")
+            self._container3 = self.start_handle("Container3")
+            self._container4 = self.start_handle("Container4")
 
             self.sio = socketio.Server(cors_allowed_origins="*")
             self.app = socketio.WSGIApp(self.sio)
@@ -61,7 +65,14 @@ class Simulation:
                 x, crab_data = self.get_joint_position(self._crab_actuator)
                 x, hoist_data = self.get_joint_position(self._hoist_actuator)
                 x, crab_rotation_data = self.get_joint_position(self._crab_rotation_actuator)
-                # print(hoist_data)
+                proximity_detection, proximity_data = self.get_proximity_sensor_data()
+                containers_data = [
+                    self.is_connected(self._container1),
+                    self.is_connected(self._container2),
+                    self.is_connected(self._container3),
+                    self.is_connected(self._container4)
+                ]
+                # print(proximity_data)
 
                 self.sio.emit('message', {
                     'camera_image': camera_image,
@@ -69,7 +80,10 @@ class Simulation:
                     'arm_data': arm_data,
                     'crab_data': crab_data,
                     'hoist_data': hoist_data,
-                    'crab_rotation_data': crab_rotation_data
+                    'crab_rotation_data': crab_rotation_data,
+                    'proximity_detection': proximity_detection,
+                    'proximity_data': proximity_data,
+                    'containers_data': containers_data
                 })
 
         else:
@@ -112,7 +126,7 @@ class Simulation:
 
     def get_proximity_sensor_data(self):
         proximity_data = sim.simxReadProximitySensor(self._clientID, self._proximity_sensor, sim.simx_opmode_streaming)
-        return proximity_data[2][2]
+        return proximity_data[1], proximity_data[2][2]
 
     def get_vision_sensor_base_64_image(self, vision_sensor):
         error_code, resolution, image = sim.simxGetVisionSensorImage(self._clientID, vision_sensor, 0, sim.simx_opmode_streaming)
@@ -133,6 +147,14 @@ class Simulation:
 
     def get_joint_position(self, joint):
         return sim.simxGetJointPosition(self._clientID, joint, sim.simx_opmode_streaming)
+
+    def is_connected(self, handle):
+        erro, child = sim.simxGetObjectChild(self._clientID, handle, 0, sim.simx_opmode_streaming)
+        if erro == 0:
+            return False if child == -1 else True
+        else:
+            return False
+
 
 if __name__ == '__main__':
     simulation = Simulation()

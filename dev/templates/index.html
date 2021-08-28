@@ -4,126 +4,105 @@
 <head>
     <meta charset="UTF-8">
     <title>GUI</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div class="controls-wrapper">
-        <h1 class="title">Lab 3 - Grupo A :)</h1>
-        <div class="control-group">
-            <div class="camera-images">
-                <img id="base64image" class="camera-image">
-                <img id="base64image0" class="camera-image">
-            </div>
-            <div class="control-element">
-                <span class = "image-box">
-                    <img class = "img-fluid" src="/static/lanca_rotacao.jpeg">
-                </span>
-                <div id="armValue">0</div>
-                <span class="item-label">Rotação da lança:</span>
-                <div class="button-group">
-                    <button type="button" class="btn button-plus" title="arm" onclick="incrementValue(this)">+</button>
-                    <span class="badge badge-light" id="armText"></span>
-                    <button type="button" class="btn button-minus" title="arm" onclick="decrementValue(this)">-</button>
-                </div>
-                <div class="input-group">
-                    <span>Valor desejado:</span>
-                    <input class="input-control" title="arm" id="arm" value=""
-                        onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
-                    </input>
-                </div>
-            </div>
-            <div class="control-element">
-                <span class = "image-box">
-                    <img class = "img-fluid" src="/static/ferramenta_altura.jpeg">
-                </span>
-                <div id="crabValue">0</div>
-                <span class="item-label">Avanço da ferramenta:</span>
-                <div class="button-group">
-                    <button type="button" class="btn button-plus" title="crab" onclick="incrementValue(this)">+</button>
-                    <span class="badge badge-light" id="crabText"></span>
-                    <button type="button" class="btn button-minus" title="crab" onclick="decrementValue(this)">-</button>
-                </div>
-                <div class="input-group">
-                    <span>Valor desejado:</span>
-                    <input class="input-control" title="crab" id="crab" value=""
-                        onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
-                    </input>
-                </div>
-            </div>
-            <div class="control-element">
-                <span class = "image-box">
-                    <img class = "img-fluid" src="/static/ferramenta_avanco.jpeg">
-                </span>
-                <div id="hoistValue">0</div>
-                <span class="item-label">Altura da ferramenta:</span>
-                <div class="button-group">
-                    <button type="button" class="btn button-plus" title="hoist" onclick="incrementValue(this)">+</button>
-                    <span class="badge badge-light" id="hoistText"></span>
-                    <button type="button" class="btn button-minus" title="hoist" onclick="decrementValue(this)">-</button>
-                </div>
-                <div class="input-group">
-                    <span>Valor desejado:</span>
-                    <input class="input-control" title="hoist" id="hoist" value=""
-                        onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
-                    </input>
-                </div>
-            </div>
-            <div class="control-element">
-                <span class = "image-box">
-                    <img class = "img-fluid" src="/static/ferramenta_rotacao.jpeg">
-                </span>
-                <div id="crabRotationValue">0</div>
-                <span class="item-label">Rotação da ferramenta:</span>
-                <div class="button-group">
-                    <button type="button" class="btn button-plus" title="crab_rotation"
-                        onclick="incrementValue(this)">+</button>
-                    <span class="badge badge-light" id="crab_rotationText"></span>
-                    <button type="button" class="btn button-minus" title="crab_rotation"
-                        onclick="decrementValue(this)">-</button>
-                </div>
-                    <div class="input-group">
-                        <span>Valor desejado:</span>
-                        <input class="input-control" title="crab_rotation" id="crab_rotation" value=""
-                            onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)">
-                        </input>
-                    </div>
-            </div>
-            <div class="control-element">
-                <span class = "image-box"></span>
-                <span class="item-label">Ferramenta:</span>
+    <div class="overlay"></div>
+    <div class="_d-flex _flex-justify-between _flex-align-center container-fluid">
+        <div class="_d-flex _d-flex-column camera-panel">
+            <img id="base64image" class="camera-image _rounded rotate180">
+            <img id="base64image0" class="camera-image _rounded rotate90">
+        </div>
+        <div class="_d-flex _d-flex-column telemetry-panel">
+            <div class="_text-center switch-tool">
+                <h3>Ferramenta de acoplamento:</h3>
                 <div class="button-group">
                     <button type="button" class="" title="suction" id="suctionButton" onclick="toggleTool()"></button>
                 </div>
-                <div class="tool-group">
-                    <div class="state-group">
-                        <span class="state-label">Estado:</span>
-                        <span class="" id="suctionText"></span>
-                    </div>
+            </div>
+            <div class="telemetry-data">
+                <div>Rotação da Lança (rad):</div> <span id="armValue">0</span>
+            </div>
+            <div class="telemetry-data">
+                <div>Avanço da Ferramenta (m):</div> <span id="crabValue">0</span>
+            </div>
+            <div class="telemetry-data">
+                <div>Altura da Ferramenta (m):</div> <span id="hoistValue">0</span>
+            </div>
+            <div class="telemetry-data">
+                <div>Rotação da Ferramenta (rad):</div> <span id="crabRotationValue">0</span>
+            </div>
+            <div class="telemetry-data">
+                <div>Ferramenta de acoplamento:</div> <span class="" id="suctionText"></span>
+            </div>
+            <div class="telemetry-data">
+                <div>Distância do objeto (m):</div> <span class="badge badge-light" id="proximitySensor">0</span>
+            </div>
+            <div class="containers-data">
+                <h4>Sensores de acomplamento:</h4>
+                <div class="_d-grid container-flags">
+                    <span id="container1">Container 1</span>
+                    <span id="container2">Container 2</span>
+                    <span id="container3">Container 3</span>
+                    <span id="container4">Container 4</span>
                 </div>
             </div>
-            <div class="control-element bottom-elements">
-                <span class = "image-box"></span>
-                <span class="item-label">Sensor de carga:</span>
-                <span class="" id="forceSensorText"></span>
-            </div>
-            <div class="control-element bottom-elements">
-                <span class = "image-box"></span>
-                <span class="item-label">Distância do objeto:</span>
-                <span class="badge badge-light" id="proximitySensor"></span>
+            <div class="start-stop-buttons _text-center">
+                <h4>Controle de atualização:</h4>
+                <button type="button" class="btn btn-primary" onclick="startStatsRefresh()">Start</button>
+                <button type="button" class="btn btn-secondary" onclick="stopStatsRefresh()">Stop</button>
             </div>
         </div>
-        <!-- <div class="start-stop-buttons">
-        <button type="button" class="btn btn-success" onclick="startStatsRefresh()">Start</button>
-        <button type="button" class="btn btn-danger" onclick="stopStatsRefresh()">Stop</button>
-        </div> -->
+        <div class="_d-grid movement-controls">
+            <div class="control-box">
+                <h3 class="control-name">Rotação da lança</h3>
+                <img class="img-fluid _rounded" src="/static/lanca_rotacao.jpeg">
+                <div class="_p-y-2 velocity-data _rounded">Velocidade aplicada: <span id="armText"></span></div>
+                <div class="_d-flex _flex-justify-between">
+                    <button type="button" class="btn btn-secondary" title="arm" onclick="decrementValue(this)">-</button>
+                    <input class="_rounded _text-center" title="arm" id="arm" value="" onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)" />
+                    <button type="button" class="btn btn-primary" title="arm" onclick="incrementValue(this)">+</button>
+                </div>
+            </div>
+            <div class="control-box">
+                <h3 class="control-name">Avanço da ferramenta</h3>
+                <img class="img-fluid _rounded" src="/static/ferramenta_avanco.jpeg">
+                <div class="_p-y-2 velocity-data _rounded">Velocidade aplicada: <span id="crabText"></span></div>
+                <div class="_d-flex _flex-justify-between">
+                    <button type="button" class="btn btn-secondary" title="crab" onclick="decrementValue(this)">-</button>
+                    <input class="_rounded _text-center" title="crab" id="crab" value="" onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)" />
+                    <button type="button" class="btn btn-primary" title="crab" onclick="incrementValue(this)">+</button>
+                </div>
+            </div>
+            <div class="control-box">
+                <h3 class="control-name">Altura da ferramenta</h3>
+                <img class="img-fluid _rounded" src="/static/ferramenta_altura.jpeg">
+                <div class="_p-y-2 velocity-data _rounded">Velocidade aplicada: <span id="hoistText"></span></div>
+                <div class="_d-flex _flex-justify-between">
+                    <button type="button" class="btn btn-secondary" title="hoist" onclick="decrementValue(this)">-</button>
+                    <input class="_rounded _text-center" title="hoist" id="hoist" value="" onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)" />
+                    <button type="button" class="btn btn-primary" title="hoist" onclick="incrementValue(this)">+</button>
+                </div>
+            </div>
+            <div class="control-box">
+                <h3 class="control-name">Rotação da ferramenta</h3>
+                <img class="img-fluid _rounded" src="/static/ferramenta_altura.jpeg">
+                <div class="_p-y-2 velocity-data _rounded">Velocidade aplicada: <span id="crab_rotationText"></span></div>
+                <div class="_d-flex _flex-justify-between">
+                    <button type="button" class="btn btn-secondary" title="crab_rotation" onclick="decrementValue(this)">-</button>
+                    <input class="_rounded _text-center" title="crab_rotation" id="crab_rotation" value="" onfocusout="updateValue(this)" onkeydown="updateValueEnter(this)" />
+                    <button type="button" class="btn btn-primary" title="crab_rotation" onclick="incrementValue(this)">+</button>
+                </div>
+            </div>
+        </div>
     </div>
-
     <script>
+        let telemetryDataRefreshMethod
         let telemetryStatsRefreshMethod
+
         const updateTelemetry = () => {
             const armValue = document.getElementById('armText')
             const crabValue = document.getElementById('crabText')
@@ -131,7 +110,6 @@
             const crabRotationText = document.getElementById('crab_rotationText')
             const suctionValue = document.getElementById('suctionText')
             const suctionButton = document.getElementById('suctionButton')
-            const forceSensorText = document.getElementById('forceSensorText')
 
             fetch("/simulation_data", {
                 method: "GET"
@@ -153,21 +131,14 @@
                     suctionButton.textContent = "Ativar"
                     suctionButton.className = "btn btn-success"
                 }
-                if (telemetryStats.suction_pad_force_sensor) {
-                    forceSensorText.textContent = "Detectado"
-                    forceSensorText.className = "badge badge-success"
-                } else {
-                    forceSensorText.textContent = "Não detectado"
-                    forceSensorText.className = "badge badge-danger"
-                }
             })
 
-            telemetryStatsRefreshMethod = window.setTimeout(updateTelemetry, 500)
+            telemetryDataRefreshMethod = window.setTimeout(updateTelemetry, 1000)
         }
 
 
-        // const socket = io("http://localhost:8765")
-        const socket = io('http://acce-177-55-224-173.ngrok.io')
+        const socket = io("http://localhost:8765")
+        // const socket = io('http://acce-177-55-224-173.ngrok.io')
         socket.on("connect", (socket) => {
           console.log(socket); // print`s { x: "42", EIO: "4", transport: "polling" }
         });
@@ -180,23 +151,46 @@
             const hoist_actuator_data = document.getElementById('hoistValue')
             const crab_rotation_actuator_data = document.getElementById('crabRotationValue')
             const proximity_sensor = document.getElementById('proximitySensor')
-            // const suction_data = document.getElementById('suctionData')
+            const container1 = document.getElementById('container1')
+            const container2 = document.getElementById('container2')
+            const container3 = document.getElementById('container3')
+            const container4 = document.getElementById('container4')
 
-            base64image.src = message.camera_image
-            base64image0.src = message.camera_image_0
-            arm_actuator_data.innerText = message.arm_data.toFixed(2)
-            crab_actuator_data.innerText = message.crab_data.toFixed(2)
-            hoist_actuator_data.innerText = message.hoist_data.toFixed(2)
-            crab_rotation_actuator_data.innerText = message.crab_rotation_data.toFixed(2)
-            proximity_sensor.textContent = message.proximity_data
-            // suction_data.textContent = message.suction_data
+            const {
+                camera_image,
+                camera_image_0,
+                arm_data,
+                crab_data,
+                hoist_data,
+                crab_rotation_data,
+                proximity_data,
+                proximity_detection,
+                containers_data
+            } = message
+
+            base64image.src = camera_image
+            base64image0.src = camera_image_0
+            arm_actuator_data.innerText = arm_data.toFixed(2)
+            crab_actuator_data.innerText = crab_data.toFixed(2)
+            hoist_actuator_data.innerText = hoist_data.toFixed(2)
+            crab_rotation_actuator_data.innerText = crab_rotation_data.toFixed(2)
+            proximity_sensor.textContent = proximity_data.toFixed(2)
+            proximity_sensor.className = proximity_detection ? 'badge badge-warning' : 'badge badge-light'
+            container1.className = containers_data[0] ? 'badge badge-success' : 'badge badge-danger'
+            container2.className = containers_data[1] ? 'badge badge-success' : 'badge badge-danger'
+            container3.className = containers_data[2] ? 'badge badge-success' : 'badge badge-danger'
+            container4.className = containers_data[3] ? 'badge badge-success' : 'badge badge-danger'
         });
 
-        window.setInterval(() => socket.emit('telemetry'), 200)
+        const startStatsRefresh = () => {
+            telemetryDataRefreshMethod = window.setTimeout(updateTelemetry, 500)
+            telemetryStatsRefreshMethod = window.setInterval(() => socket.emit('telemetry'), 200)
+        }
 
-
-        const startStatsRefresh = () => telemetryStatsRefreshMethod = window.setTimeout(updateTelemetry, 500)
-        const stopStatsRefresh = () => clearTimeout(telemetryStatsRefreshMethod)
+        const stopStatsRefresh = () => {
+            clearTimeout(telemetryDataRefreshMethod)
+            clearInterval(telemetryStatsRefreshMethod)
+        }
 
         startStatsRefresh()
 
@@ -248,5 +242,4 @@
         }
     </script>
 </body>
-
 </html>
