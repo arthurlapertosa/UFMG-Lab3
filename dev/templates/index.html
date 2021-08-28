@@ -17,6 +17,7 @@
             <div class="camera-images">
                 <img id="base64image" class="camera-image">
                 <img id="base64image0" class="camera-image">
+                <img id="base64image1" class="camera-image">
             </div>
             <div class="control-element">
                 <span class = "image-box">
@@ -175,6 +176,7 @@
         socket.on("message", (message) => {
             const base64image = document.getElementById('base64image')
             const base64image0 = document.getElementById('base64image0')
+            const base64image1 = document.getElementById('base64image1')
             const arm_actuator_data = document.getElementById('armValue')
             const crab_actuator_data = document.getElementById('crabValue')
             const hoist_actuator_data = document.getElementById('hoistValue')
@@ -184,6 +186,7 @@
 
             base64image.src = message.camera_image
             base64image0.src = message.camera_image_0
+            base64image1.src = message.camera_image_1
             arm_actuator_data.innerText = message.arm_data.toFixed(2)
             crab_actuator_data.innerText = message.crab_data.toFixed(2)
             hoist_actuator_data.innerText = message.hoist_data.toFixed(2)

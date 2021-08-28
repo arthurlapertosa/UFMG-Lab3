@@ -39,6 +39,7 @@ class Simulation:
             self._proximity_sensor = self.start_handle("Proximity_sensor")
             self._vision_sensor = self.start_handle("Vision_sensor")
             self._vision_sensor_0 = self.start_handle("Vision_sensor1")
+            self._vision_sensor_1 = self.start_handle("Vision_sensor0")
 
             self.sio = socketio.Server(cors_allowed_origins="*")
             self.app = socketio.WSGIApp(self.sio)
@@ -57,15 +58,17 @@ class Simulation:
             def telemetry(sid):
                 camera_image = self.get_vision_sensor_base_64_image(self._vision_sensor)
                 camera_image_0 = self.get_vision_sensor_base_64_image(self._vision_sensor_0)
+                camera_image_1 = self.get_vision_sensor_base_64_image(self._vision_sensor_1)
                 x, arm_data = self.get_joint_position(self._arm_actuator)
                 x, crab_data = self.get_joint_position(self._crab_actuator)
                 x, hoist_data = self.get_joint_position(self._hoist_actuator)
                 x, crab_rotation_data = self.get_joint_position(self._crab_rotation_actuator)
-                # print(hoist_data)
+                # print(camera_image_1)
 
                 self.sio.emit('message', {
                     'camera_image': camera_image,
                     'camera_image_0': camera_image_0,
+                    'camera_image_1': camera_image_1,
                     'arm_data': arm_data,
                     'crab_data': crab_data,
                     'hoist_data': hoist_data,
