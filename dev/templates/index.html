@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="telemetry-data">
-                <div>Rotação da Lança (rad):</div> <span id="armValue">0</span>
+                <div>Rotação da Lança (graus):</div> <span id="armValue">0</span>
             </div>
             <div class="telemetry-data">
                 <div>Avanço da Ferramenta (m):</div> <span id="crabValue">0</span>
@@ -33,7 +33,7 @@
                 <div>Altura da Ferramenta (m):</div> <span id="hoistValue">0</span>
             </div>
             <div class="telemetry-data">
-                <div>Rotação da Ferramenta (rad):</div> <span id="crabRotationValue">0</span>
+                <div>Rotação da Ferramenta (graus):</div> <span id="crabRotationValue">0</span>
             </div>
             <div class="telemetry-data">
                 <div>Ferramenta de acoplamento:</div> <span class="" id="suctionText"></span>
@@ -89,7 +89,7 @@
             </div>
             <div class="control-box">
                 <h3 class="control-name">Rotação da ferramenta</h3>
-                <img class="img-fluid _rounded" src="/static/ferramenta_altura.jpeg">
+                <img class="img-fluid _rounded" src="/static/ferramenta_rotacao.jpeg">
                 <div class="_p-y-2 velocity-data _rounded">Velocidade aplicada: <span id="crab_rotationText"></span></div>
                 <div class="_d-flex _flex-justify-between">
                     <button type="button" class="btn btn-secondary" title="crab_rotation" onclick="decrementValue(this)">-</button>
@@ -137,8 +137,8 @@
         }
 
 
-        const socket = io("http://localhost:8765")
-        // const socket = io('http://acce-177-55-224-173.ngrok.io')
+        // const socket = io("http://localhost:8765")
+        const socket = io('http://3ca9-2804-7f2-298f-d9b5-e143-dd9f-cae4-66b2.ngrok.io')
         socket.on("connect", (socket) => {
           console.log(socket); // print`s { x: "42", EIO: "4", transport: "polling" }
         });
@@ -170,10 +170,10 @@
 
             base64image.src = camera_image
             base64image0.src = camera_image_0
-            arm_actuator_data.innerText = arm_data.toFixed(2)
+            arm_actuator_data.innerText = (arm_data * 180 / Math.PI).toFixed(2)
             crab_actuator_data.innerText = crab_data.toFixed(2)
-            hoist_actuator_data.innerText = hoist_data.toFixed(2)
-            crab_rotation_actuator_data.innerText = crab_rotation_data.toFixed(2)
+            hoist_actuator_data.innerText = (hoist_data + 11.76).toFixed(2)
+            crab_rotation_actuator_data.innerText = (crab_rotation_data * 180 / Math.PI).toFixed(2)
             proximity_sensor.textContent = proximity_data.toFixed(2)
             proximity_sensor.className = proximity_detection ? 'badge badge-warning' : 'badge badge-light'
             container1.className = containers_data[0] ? 'badge badge-success' : 'badge badge-danger'
